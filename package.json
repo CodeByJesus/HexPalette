@@ -1,0 +1,56 @@
+{
+  "name": "hexlens",
+  "displayName": "HexLens",
+  "description": "Lightning-fast inline color swatches with integrated color picker. View HEX, RGB, HSL colors instantly and edit them without leaving your editor.",
+  "version": "0.1.0",
+  "publisher": "hexlens-dev",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "keywords": [
+    "color",
+    "hex",
+    "rgb",
+    "hsl",
+    "css",
+    "color-picker",
+    "design",
+    "preview"
+  ],
+  "categories": [
+    "Other",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:less",
+    "onLanguage:html",
+    "onLanguage:json"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hexlens.toggleGutter",
+        "title": "HexLens: Toggle Gutter Colors"
+      },
+      {
+        "command": "hexlens.pickColor",
+        "title": "HexLens: Pick Color"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "18.x",
+    "typescript": "^4.9.4"
+  }
+}
