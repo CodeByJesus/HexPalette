@@ -3,26 +3,17 @@ import { ColorDetector, ColorMatch } from './colorDetector';
 
 export class ColorDecorator {
     private colorDetector: ColorDetector;
+    // Inline swatch disabled per user preference (circle next to square looked redundant)
+    // Keeping the field for easy re-enable if needed in the future.
     private inlineDecorationType: vscode.TextEditorDecorationType;
-    private gutterDecorationType: vscode.TextEditorDecorationType;
+    private gutterTypes: Map<string, vscode.TextEditorDecorationType> = new Map();
     private gutterEnabled = false;
+    private updateTimer: NodeJS.Timeout | undefined;
 
     constructor(colorDetector: ColorDetector) {
         this.colorDetector = colorDetector;
-        
-
-        this.inlineDecorationType = vscode.window.createTextEditorDecorationType({
-            before: {
-                contentIconPath: this.createColorIcon('#000000'),
-                margin: '0 4px 0 0'
-            }
-        });
-
-
-        this.gutterDecorationType = vscode.window.createTextEditorDecorationType({
-            gutterIconPath: this.createGutterIcon('#000000'),
-            gutterIconSize: 'contain'
-        });
+        // Base inline decoration kept but unused (inline disabled). If re-enabled, set sizes here.
+        this.inlineDecorationType = vscode.window.createTextEditorDecorationType({});
     }
 
     public toggleGutter(): void {
@@ -43,31 +34,63 @@ export class ColorDecorator {
         const text = activeEditor.document.getText();
         const colors = this.colorDetector.findColors(text);
 
+        // Inline decorations disabled: do not render circle before text
         const inlineDecorations: vscode.DecorationOptions[] = [];
-        const gutterDecorations: vscode.DecorationOptions[] = [];
+        const gutterRangesByColor: Map<string, vscode.DecorationOptions[]> = new Map();
 
         colors.forEach(color => {
             const startPos = activeEditor.document.positionAt(color.range[0]);
             const endPos = activeEditor.document.positionAt(color.range[1]);
             const range = new vscode.Range(startPos, endPos);
 
-            // Decoración inline (swatch)
-            const inlineDecoration: vscode.DecorationOptions = {
-                range: range
-            };
-            inlineDecorations.push(inlineDecoration);
+            // Inline swatch intentionally not added (user prefers only the existing square swatch)
 
             // Decoración gutter (si está habilitado)
             if (this.gutterEnabled) {
-                const gutterDecoration: vscode.DecorationOptions = {
-                    range: range
-                };
-                gutterDecorations.push(gutterDecoration);
+                const list = gutterRangesByColor.get(color.value) ?? [];
+                list.push({ range });
+                gutterRangesByColor.set(color.value, list);
             }
         });
 
-        activeEditor.setDecorations(this.inlineDecorationType, inlineDecorations);
-        activeEditor.setDecorations(this.gutterDecorationType, gutterDecorations);
+        // Inline decorations disabled: skip applying
+
+        // Reutilizar decorationTypes por color; crear solo los faltantes
+        if (this.gutterEnabled) {
+            const seen = new Set<string>();
+            gutterRangesByColor.forEach((ranges, color) => {
+                seen.add(color);
+                let type = this.gutterTypes.get(color);
+                if (!type) {
+                    type = vscode.window.createTextEditorDecorationType({
+                        gutterIconPath: this.createGutterIcon(color),
+                        gutterIconSize: 'contain'
+                    });
+                    this.gutterTypes.set(color, type);
+                }
+                activeEditor.setDecorations(type, ranges);
+            });
+            // Dispose types no longer used
+            [...this.gutterTypes.keys()].forEach(color => {
+                if (!seen.has(color)) {
+                    const t = this.gutterTypes.get(color)!;
+                    t.dispose();
+                    this.gutterTypes.delete(color);
+                }
+            });
+        } else {
+            // Gutter apagado: limpiar decoraciones
+            this.gutterTypes.forEach(type => type.dispose());
+            this.gutterTypes.clear();
+        }
+    }
+
+    // Debounced updater to reduce flicker after edits
+    public scheduleUpdateDecorations(delay = 50): void {
+        if (this.updateTimer) {
+            clearTimeout(this.updateTimer);
+        }
+        this.updateTimer = setTimeout(() => this.updateDecorations(), delay);
     }
 
     private createColorIcon(color: string): vscode.Uri {
@@ -90,6 +113,7 @@ export class ColorDecorator {
 
     public dispose(): void {
         this.inlineDecorationType.dispose();
-        this.gutterDecorationType.dispose();
+        this.gutterTypes.forEach(type => type.dispose());
+        this.gutterTypes.clear();
     }
 }
