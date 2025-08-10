@@ -1,9 +1,9 @@
 {
-  "name": "hexlens",
-  "displayName": "HexLens",
+  "name": "hexpalette",
+  "displayName": "HexPalette",
   "description": "Lightning-fast inline color swatches with integrated color picker. View HEX, RGB, HSL colors instantly and edit them without leaving your editor.",
-  "version": "0.1.0",
-  "publisher": "jesus-hexlens",
+  "version": "0.1.1",
+  "publisher": "jesus-hexpalette",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jesus-hexlens/Hexlens.git"
+    "url": "https://github.com/jesus-hexpalette/HexPalette.git"
   },
   "icon": "icon.png",
   "galleryBanner": {
@@ -43,12 +43,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "hexlens.toggleGutter",
-        "title": "HexLens: Toggle Gutter Colors"
+        "command": "hexpalette.toggleGutter",
+        "title": "HexPalette: Toggle Gutter Colors"
       },
       {
-        "command": "hexlens.pickColor",
-        "title": "HexLens: Pick Color"
+        "command": "hexpalette.pickColor",
+        "title": "HexPalette: Pick Color"
       }
     ]
   },

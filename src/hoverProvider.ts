@@ -54,7 +54,7 @@ export class HoverProvider implements vscode.HoverProvider {
         }
         
         // Color picker link
-        content.appendMarkdown(`\n\n[🎨 Edit Color](command:hexlens.pickColor)`);
+        content.appendMarkdown(`\n\n[🎨 Edit Color](command:hexpalette.pickColor)`);
         
         content.isTrusted = true;
         return content;

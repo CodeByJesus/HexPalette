@@ -5,7 +5,7 @@ import { HoverProvider } from './hoverProvider';
 import { ColorPicker } from './colorPicker';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('HexLens extension is now active!');
+    console.log('HexPalette extension is now active!');
 
     const colorDetector = new ColorDetector();
     const colorDecorator = new ColorDecorator(colorDetector);
@@ -19,12 +19,12 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
 
-    const toggleCommand = vscode.commands.registerCommand('hexlens.toggleGutter', () => {
+    const toggleCommand = vscode.commands.registerCommand('hexpalette.toggleGutter', () => {
         colorDecorator.toggleGutter();
     });
 
 
-    const pickColorCommand = vscode.commands.registerCommand('hexlens.pickColor', async () => {
+    const pickColorCommand = vscode.commands.registerCommand('hexpalette.pickColor', async () => {
         const activeEditor = vscode.window.activeTextEditor;
         if (!activeEditor) {
             vscode.window.showWarningMessage('No active editor found');

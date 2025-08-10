@@ -1,8 +1,8 @@
-# HexLens - Visual Studio Code Extension
+# HexPalette - Visual Studio Code Extension
 
 ⚡ **Lightning-fast inline color swatches** with integrated color picker for web developers and designers.
 
-![HexLens Demo](https://raw.githubusercontent.com/hexlens-dev/hexlens/main/demo.gif)
+![HexPalette Demo](https://raw.githubusercontent.com/hexpalette-dev/hexpalette/main/demo.gif)
 
 ## ✨ Features
 
@@ -24,7 +24,7 @@
 
 ## 🚀 Getting Started
 
-1. **Install** HexLens from the VS Code Marketplace
+1. **Install** HexPalette from the VS Code Marketplace
 2. **Open** any file with colors (CSS, JS, HTML, JSON, etc.)
 3. **Enjoy** instant color previews!
 
@@ -38,15 +38,15 @@
 ### Commands
 | Command | Description |
 |---------|-------------|
-| `HexLens: Toggle Gutter Colors` | Show/hide gutter color indicators |
-| `HexLens: Pick Color` | Edit color at cursor position |
+| `HexPalette: Toggle Gutter Colors` | Show/hide gutter color indicators |
+| `HexPalette: Pick Color` | Edit color at cursor position |
 
 ### Keyboard Shortcuts
-- `Ctrl+Shift+P` → "HexLens: Pick Color" to edit current color
+- `Ctrl+Shift+P` → "HexPalette: Pick Color" to edit current color
 
 ## 🛠️ Extension Settings
 
-HexLens works out of the box with zero configuration. All features are enabled by default.
+HexPalette works out of the box with zero configuration. All features are enabled by default.
 
 ## 📊 Performance
 
@@ -57,7 +57,7 @@ HexLens works out of the box with zero configuration. All features are enabled b
 
 ## 🌟 Examples
 
-### Before HexLens
+### Before HexPalette
 ```css
 .button {
   background: #ff6b6b;
@@ -66,7 +66,7 @@ HexLens works out of the box with zero configuration. All features are enabled b
 }
 ```
 
-### With HexLens
+### With HexPalette
 ```css
 .button {
   background: 🔴 #ff6b6b;
