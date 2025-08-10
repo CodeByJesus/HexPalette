@@ -12,18 +12,18 @@ export function activate(context: vscode.ExtensionContext) {
     const hoverProvider = new HoverProvider(colorDetector);
     const colorPicker = new ColorPicker();
 
-    // Registrar el proveedor de hover
+
     const hoverDisposable = vscode.languages.registerHoverProvider(
         ['javascript', 'typescript', 'css', 'scss', 'less', 'html', 'json'],
         hoverProvider
     );
 
-    // Comando para toggle del gutter
+
     const toggleCommand = vscode.commands.registerCommand('hexlens.toggleGutter', () => {
         colorDecorator.toggleGutter();
     });
 
-    // Comando para color picker
+
     const pickColorCommand = vscode.commands.registerCommand('hexlens.pickColor', async () => {
         const activeEditor = vscode.window.activeTextEditor;
         if (!activeEditor) {
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
         const text = document.getText();
         const colors = colorDetector.findColors(text);
 
-        // Encontrar el color bajo el cursor
+
         const offset = document.offsetAt(position);
         const colorMatch = colors.find((color: any) => 
             offset >= color.range[0] && offset <= color.range[1]
@@ -58,12 +58,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    // Actualizar decoraciones cuando cambia el editor activo
+
     const activeEditorChange = vscode.window.onDidChangeActiveTextEditor(() => {
         colorDecorator.updateDecorations();
     });
 
-    // Actualizar cuando cambia el contenido del documento
+
     const documentChange = vscode.workspace.onDidChangeTextDocument((event) => {
         const activeEditor = vscode.window.activeTextEditor;
         if (activeEditor && event.document === activeEditor.document) {
@@ -79,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
         documentChange
     );
 
-    // Inicializar decoraciones
+
     colorDecorator.updateDecorations();
 }
 

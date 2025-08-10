@@ -14,7 +14,6 @@ class HoverProvider {
         const text = document.getText(range);
         const fullText = document.getText();
         const colors = this.colorDetector.findColors(fullText);
-        // Encontrar el color que coincide con la posición actual
         const offset = document.offsetAt(position);
         const colorMatch = colors.find(color => offset >= color.range[0] && offset <= color.range[1]);
         if (!colorMatch) {
@@ -25,11 +24,8 @@ class HoverProvider {
     }
     createHoverContent(colorMatch) {
         const content = new vscode.MarkdownString();
-        // Título con el color
         content.appendMarkdown(`**Color:** \`${colorMatch.color}\`\n\n`);
-        // Preview del color
         content.appendMarkdown(`<span style="display:inline-block;width:20px;height:20px;background-color:${colorMatch.color};border:1px solid #ccc;border-radius:3px;"></span>\n\n`);
-        // Información adicional según el tipo
         if (colorMatch.type === 'hex') {
             const rgb = this.colorDetector.hexToRgb(colorMatch.color);
             if (rgb) {

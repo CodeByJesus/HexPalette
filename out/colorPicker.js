@@ -4,7 +4,6 @@ exports.ColorPicker = void 0;
 const vscode = require("vscode");
 class ColorPicker {
     async showColorPicker(currentColor) {
-        // Usar el color picker nativo de VS Code
         const result = await vscode.window.showInputBox({
             prompt: 'Enter new color value',
             value: currentColor,

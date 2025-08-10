@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 export class ColorPicker {
     public async showColorPicker(currentColor: string): Promise<string | undefined> {
-        // Usar el color picker nativo de VS Code
+
         const result = await vscode.window.showInputBox({
             prompt: 'Enter new color value',
             value: currentColor,

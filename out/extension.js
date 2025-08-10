@@ -12,13 +12,10 @@ function activate(context) {
     const colorDecorator = new colorDecorator_1.ColorDecorator(colorDetector);
     const hoverProvider = new hoverProvider_1.HoverProvider(colorDetector);
     const colorPicker = new colorPicker_1.ColorPicker();
-    // Registrar el proveedor de hover
     const hoverDisposable = vscode.languages.registerHoverProvider(['javascript', 'typescript', 'css', 'scss', 'less', 'html', 'json'], hoverProvider);
-    // Comando para toggle del gutter
     const toggleCommand = vscode.commands.registerCommand('hexlens.toggleGutter', () => {
         colorDecorator.toggleGutter();
     });
-    // Comando para color picker
     const pickColorCommand = vscode.commands.registerCommand('hexlens.pickColor', async () => {
         const activeEditor = vscode.window.activeTextEditor;
         if (!activeEditor) {
@@ -29,7 +26,6 @@ function activate(context) {
         const document = activeEditor.document;
         const text = document.getText();
         const colors = colorDetector.findColors(text);
-        // Encontrar el color bajo el cursor
         const offset = document.offsetAt(position);
         const colorMatch = colors.find((color) => offset >= color.range[0] && offset <= color.range[1]);
         if (!colorMatch) {
@@ -45,11 +41,9 @@ function activate(context) {
             colorDecorator.updateDecorations();
         }
     });
-    // Actualizar decoraciones cuando cambia el editor activo
     const activeEditorChange = vscode.window.onDidChangeActiveTextEditor(() => {
         colorDecorator.updateDecorations();
     });
-    // Actualizar cuando cambia el contenido del documento
     const documentChange = vscode.workspace.onDidChangeTextDocument((event) => {
         const activeEditor = vscode.window.activeTextEditor;
         if (activeEditor && event.document === activeEditor.document) {
@@ -57,7 +51,6 @@ function activate(context) {
         }
     });
     context.subscriptions.push(hoverDisposable, toggleCommand, pickColorCommand, activeEditorChange, documentChange);
-    // Inicializar decoraciones
     colorDecorator.updateDecorations();
 }
 exports.activate = activate;

@@ -14,15 +14,11 @@ class ColorDetector {
     }
     findColors(text) {
         const matches = [];
-        // Buscar colores HEX
         this.findPatternMatches(text, this.patterns.hex, 'hex', matches);
-        // Buscar colores RGB/RGBA
         this.findPatternMatches(text, this.patterns.rgb, 'rgb', matches);
         this.findPatternMatches(text, this.patterns.rgba, 'rgb', matches);
-        // Buscar colores HSL/HSLA
         this.findPatternMatches(text, this.patterns.hsl, 'hsl', matches);
         this.findPatternMatches(text, this.patterns.hsla, 'hsl', matches);
-        // Buscar variables CSS
         this.findPatternMatches(text, this.patterns.cssVar, 'css-var', matches);
         return matches;
     }

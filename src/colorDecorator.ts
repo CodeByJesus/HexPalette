@@ -10,7 +10,7 @@ export class ColorDecorator {
     constructor(colorDetector: ColorDetector) {
         this.colorDetector = colorDetector;
         
-        // Decoración para swatches inline (antes del texto)
+
         this.inlineDecorationType = vscode.window.createTextEditorDecorationType({
             before: {
                 contentIconPath: this.createColorIcon('#000000'),
@@ -18,7 +18,7 @@ export class ColorDecorator {
             }
         });
 
-        // Decoración para gutter (margen izquierdo)
+
         this.gutterDecorationType = vscode.window.createTextEditorDecorationType({
             gutterIconPath: this.createGutterIcon('#000000'),
             gutterIconSize: 'contain'
