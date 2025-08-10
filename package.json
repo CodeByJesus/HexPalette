@@ -3,7 +3,7 @@
   "displayName": "HexLens",
   "description": "Lightning-fast inline color swatches with integrated color picker. View HEX, RGB, HSL colors instantly and edit them without leaving your editor.",
   "version": "0.1.0",
-  "publisher": "hexlens-dev",
+  "publisher": "CodeByJesus",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -17,6 +17,11 @@
     "design",
     "preview"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CodeByJesus/Hexlens.git"
+  },
+  "icon": "icon.png",
   "categories": [
     "Other",
     "Formatters"
