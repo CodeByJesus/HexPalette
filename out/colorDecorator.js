@@ -4,18 +4,11 @@ exports.ColorDecorator = void 0;
 const vscode = require("vscode");
 class ColorDecorator {
     constructor(colorDetector) {
+        this.gutterTypes = new Map();
         this.gutterEnabled = false;
         this.colorDetector = colorDetector;
-        this.inlineDecorationType = vscode.window.createTextEditorDecorationType({
-            before: {
-                contentIconPath: this.createColorIcon('#000000'),
-                margin: '0 4px 0 0'
-            }
-        });
-        this.gutterDecorationType = vscode.window.createTextEditorDecorationType({
-            gutterIconPath: this.createGutterIcon('#000000'),
-            gutterIconSize: 'contain'
-        });
+        // Base inline decoration kept but unused (inline disabled). If re-enabled, set sizes here.
+        this.inlineDecorationType = vscode.window.createTextEditorDecorationType({});
     }
     toggleGutter() {
         this.gutterEnabled = !this.gutterEnabled;
@@ -29,27 +22,58 @@ class ColorDecorator {
         }
         const text = activeEditor.document.getText();
         const colors = this.colorDetector.findColors(text);
+        // Inline decorations disabled: do not render circle before text
         const inlineDecorations = [];
-        const gutterDecorations = [];
+        const gutterRangesByColor = new Map();
         colors.forEach(color => {
             const startPos = activeEditor.document.positionAt(color.range[0]);
             const endPos = activeEditor.document.positionAt(color.range[1]);
             const range = new vscode.Range(startPos, endPos);
-            // Decoración inline (swatch)
-            const inlineDecoration = {
-                range: range
-            };
-            inlineDecorations.push(inlineDecoration);
+            // Inline swatch intentionally not added (user prefers only the existing square swatch)
             // Decoración gutter (si está habilitado)
             if (this.gutterEnabled) {
-                const gutterDecoration = {
-                    range: range
-                };
-                gutterDecorations.push(gutterDecoration);
+                const list = gutterRangesByColor.get(color.value) ?? [];
+                list.push({ range });
+                gutterRangesByColor.set(color.value, list);
             }
         });
-        activeEditor.setDecorations(this.inlineDecorationType, inlineDecorations);
-        activeEditor.setDecorations(this.gutterDecorationType, gutterDecorations);
+        // Inline decorations disabled: skip applying
+        // Reutilizar decorationTypes por color; crear solo los faltantes
+        if (this.gutterEnabled) {
+            const seen = new Set();
+            gutterRangesByColor.forEach((ranges, color) => {
+                seen.add(color);
+                let type = this.gutterTypes.get(color);
+                if (!type) {
+                    type = vscode.window.createTextEditorDecorationType({
+                        gutterIconPath: this.createGutterIcon(color),
+                        gutterIconSize: 'contain'
+                    });
+                    this.gutterTypes.set(color, type);
+                }
+                activeEditor.setDecorations(type, ranges);
+            });
+            // Dispose types no longer used
+            [...this.gutterTypes.keys()].forEach(color => {
+                if (!seen.has(color)) {
+                    const t = this.gutterTypes.get(color);
+                    t.dispose();
+                    this.gutterTypes.delete(color);
+                }
+            });
+        }
+        else {
+            // Gutter apagado: limpiar decoraciones
+            this.gutterTypes.forEach(type => type.dispose());
+            this.gutterTypes.clear();
+        }
+    }
+    // Debounced updater to reduce flicker after edits
+    scheduleUpdateDecorations(delay = 50) {
+        if (this.updateTimer) {
+            clearTimeout(this.updateTimer);
+        }
+        this.updateTimer = setTimeout(() => this.updateDecorations(), delay);
     }
     createColorIcon(color) {
         const svg = `
@@ -69,7 +93,8 @@ class ColorDecorator {
     }
     dispose() {
         this.inlineDecorationType.dispose();
-        this.gutterDecorationType.dispose();
+        this.gutterTypes.forEach(type => type.dispose());
+        this.gutterTypes.clear();
     }
 }
 exports.ColorDecorator = ColorDecorator;
